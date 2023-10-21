@@ -1,0 +1,105 @@
+
+# This is fun with red solo cups measuredjulia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using QuadGK
+
+julia> using Unitful, UnitfulUS
+
+julia> using Roots
+
+julia> using SymPy
+
+julia> d0, d1, h = 2.5, 3.75, 4.75
+(2.5, 3.75, 4.75)
+
+julia> rad(x) = d0/2 + (d1/2 - d0/2)/h * x
+rad (generic function with 1 method)
+
+julia> vol, _ = quadgk(x -> pi * rad(x)^2, 0, h)
+(36.917804295114436, 0.0)
+
+julia> ozs = vol / 231 * 128
+20.456618830193282
+
+julia> Vol(h) = quadgk(x -> pi * rad(x)^2, 0, h)[1]
+Vol (generic function with 1 method)
+
+julia> v5 = 5
+5
+julia> h5 = find_zero(h -> Vol(h) - v5 * 231 / 128, 4)
+1.5659355800223225
+
+julia> v12 = 12
+12
+julia> h12 = find_zero(h -> Vol(h) - v12 * 231 / 128, 4)
+3.207188125690385
+
+julia> h5 / h, h12 / h
+(0.3296706484257521, 0.6751975001453442)
+-------------------------------------------------------
+
+# cool red solo cup solids of rotation and then we must rotate the line segment x/r + y/h = 1 that sits in the first quadrant around the y axis, we will create a right-circular cone. The volume of which can be expressed as a function of y will be R = r(1 - y/h) this gives us the well known volume of a cone
+julia> @syms r h x y
+(r, h, x, y)
+
+julia> R = r*(1 - y/h)
+  ⎛    y⎞
+r⋅⎜1 - ─⎟
+  ⎝    h⎠
+
+julia> cone = integrate(pi*R^2, (y, 0, h))
+     2
+π⋅h⋅r
+──────
+  3
+
+julia> @syms h0
+julia> frustrum = integrate(pi*R^2, (y, 0, h))
+     2
+π⋅h⋅r
+──────
+julia> frustrum - cone * (3h0/h - 3(h0/h)^2 +(h0/h)^3) |> simplify
+   2 ⎛ 3      ⎛   2              2⎞⎞
+π⋅r ⋅⎝h  - h₀⋅⎝3⋅h  - 3⋅h⋅h₀ + h₀ ⎠⎠
+────────────────────────────────────
+                   2
+                3⋅h
+
+-------------------------------------------------
+
+Gabriels horn is a geometric figure of mathematics - but not the real world - which has infinite height, but no volume! The figure is found by rotating the curve y = 1/x around the x-axis from 1 to infinity. If the volume formula holds what is the volume of this "horn"
+
+
+
+
+
+julia> radius(x) = 1/x
+radius (generic function with 1 method)
+
+julia> quadgk(x ->pi*radius(x)^2, 1, Inf)[1]
+3.141592653589793
+
+-------------------------------------------------------
+
+A movie studio hand is asked to find a prop vase to be used as a Ming Vase in an upcoming scene. 
+---------------------------------------------------
+julia> d(h) = h <= 44 ? 2*sqrt(26^2 - (h-20)^2) : 20 * exp(-(h-44)/10)
+d (generic function with 1 method)
+
+julia> rad(h) = d(h)/2
+rad (generic function with 1 method)
+
+julia> vt, _ = quadgk(h -> pi * rad(h)^2, 0, 50)
+(71687.17445257888, 0.00030474268102054225)
+
+julia> v_int, = quadgk(h -> pi * (rad(h) - 1/2)^2, 1/2, 50)
+(68082.1606832764, 0.00044615780431200847)
+
+julia> vt - v_int
+3605.013769302488
+
+
+
+
