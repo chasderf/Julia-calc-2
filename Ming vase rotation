@@ -1,0 +1,16 @@
+A movie studio hand is asked to find a prop vase to be used as a Ming Vase in an upcoming scene. 
+---------------------------------------------------
+julia> d(h) = h <= 44 ? 2*sqrt(26^2 - (h-20)^2) : 20 * exp(-(h-44)/10)
+d (generic function with 1 method)
+
+julia> rad(h) = d(h)/2
+rad (generic function with 1 method)
+
+julia> vt, _ = quadgk(h -> pi * rad(h)^2, 0, 50)
+(71687.17445257888, 0.00030474268102054225)
+
+julia> v_int, = quadgk(h -> pi * (rad(h) - 1/2)^2, 1/2, 50)
+(68082.1606832764, 0.00044615780431200847)
+
+julia> vt - v_int
+3605.013769302488
