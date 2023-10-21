@@ -1,0 +1,24 @@
+For a numeric example, we consider the original Red Solo Cup. The dimensions of the cup were basically: a top diameter of 
+ d1 = 3.75 inches, a bottom diameter of d0 = 2.5 inches and a height of 4.75 inches.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+julia> using CalculusWithJulia
+
+julia>  using Plots
+
+julia> using QuadGK
+
+julia> using Unitful, UnitfulUS
+
+julia> using Roots
+
+julia> using SymPy
+
+julia> d0, d1, h = 2.5, 3.75, 4.75
+(2.5, 3.75, 4.75)
+
+julia> rad(x) = d0/2 + (d1/2 - d0/2)/h * x
+rad (generic function with 1 method)
+
+julia> vol, _ = quadgk(x -> pi * rad(x)^2, 0, h)
+(36.917804295114436, 0.0)
