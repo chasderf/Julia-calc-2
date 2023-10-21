@@ -1,0 +1,12 @@
+
+julia> d0, d1, h = 2.5, 3.75, 4.75
+(2.5, 3.75, 4.75)
+
+julia> d(x) = d0 + (d1 - d0)/h * x
+d (generic function with 1 method)
+
+julia> vol, _ = quadgk(x -> d(x)^2, 0, h)
+(47.005208333333336, 0.0)
+
+julia> vol / 231 * 128
+26.046176046176047
