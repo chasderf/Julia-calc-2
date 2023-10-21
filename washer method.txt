@@ -13,5 +13,6 @@ Rad (generic function with 1 method)
 
 julia> rad(x) = x
 rad (generic function with 1 method)
+
 julia> V, _ = quadgk(x -> pi*(Rad(x)^2 - rad(x)^2), 0, 1)
 (1.0471975511965974, 0.0)
