@@ -1,0 +1,13 @@
+#rotate the graph of x^x from 0 to 3/2 around the x-axis. What is the surface area generated?
+
+
+julia> f(x) = x^x
+f (generic function with 1 method)
+
+julia> a, b = 0, 3/2
+(0, 1.5)
+julia> val, _ = quadgk(x -> 2pi * f(x) * sqrt(1 + f'(x)^2), a, b)
+(14.934256764843937, 1.717578376544558e-7)
+
+julia> val
+14.934256764843937

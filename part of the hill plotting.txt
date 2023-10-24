@@ -1,0 +1,8 @@
+julia> a,b = find_zeros(x -> f(x) - g(x), -3,3)
+2-element Vector{Float64}:
+ -2.732050807568877
+  0.7320508075688773
+
+julia> quadgk(x -> f(x) - g(x), a, b)
+(6.928203230275509, 0.0)
+

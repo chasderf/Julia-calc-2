@@ -1,0 +1,11 @@
+The limacon of pascal has
+
+r(theta_ = b + 2acos(theta)
+
+julia> a,b = 4, 2
+(4, 2)
+
+julia> r(theta) = b + 2a * cos(theta)
+r (generic function with 1 method)
+
+julia> plot_polar(0..2pi, r)

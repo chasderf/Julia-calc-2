@@ -1,0 +1,4 @@
+julia> a0 = (1/2) * asin(1/8)
+0.0626639155840327
+
+julia> plot_polar(a0..(pi/2 - a0), r)

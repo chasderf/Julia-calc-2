@@ -1,0 +1,21 @@
+julia> function euler(F, x0, xn, y0, n)
+              h = (xn - x0)/n
+              xs = zeros(n+1)
+              ys = zeros(n+1)
+              xs[1] = x0
+              ys[1] = y0
+              for i in 1:n
+              xs[i + 1] = xs[i] + h
+              ys[i + 1] = ys[i] + h * F(ys[i], xs[i])
+              end
+              xs[end] = xn
+              linterp(xs, ys)
+              end
+euler (generic function with 1 method)
+
+julia> u12 = euler(F, 1, 2, 1, 50)
+#7 (generic function with 1 method)
+
+julia> plot(exp(-1/2)*exp(x^2/2), x0, 2)
+
+julia> plot!(u12, x0, 2)

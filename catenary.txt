@@ -1,0 +1,39 @@
+julia> @syms w::positive H::positive y()
+(w, H, y)
+
+julia> eqnc = D2(y)(x) ~ (w/H) * sqrt(1 + y'(x)^2)
+                   _________________
+                  ╱           2
+                 ╱  ⎛d       ⎞
+  2         w⋅  ╱   ⎜──(y(x))⎟  + 1
+ d            ╲╱    ⎝dx      ⎠
+───(y(x)) = ────────────────────────
+  2                    H
+dx
+
+julia> eqnc1 = subs(eqnc, D(y)(x) => u(x))
+                ___________
+               ╱  2
+d          w⋅╲╱  u (x) + 1
+──(u(x)) = ────────────────
+dx                H
+
+julia> outc = dsolve(eqnc1)
+           ⎛     w⋅x⎞
+u(x) = sinh⎜C₁ + ───⎟
+           ⎝      H ⎠
+
+julia> D(y)(x) ~ rhs(outc)
+d              ⎛     w⋅x⎞
+──(y(x)) = sinh⎜C₁ + ───⎟
+dx             ⎝      H ⎠
+
+julia> yc = (H/w) * cosh(C1 + w*x/H)
+      ⎛     w⋅x⎞
+H⋅cosh⎜C₁ + ───⎟
+      ⎝      H ⎠
+────────────────
+       w
+
+julia> diff(yc, x) == rhs(outc)
+true

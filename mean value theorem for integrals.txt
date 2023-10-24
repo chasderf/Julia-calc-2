@@ -1,0 +1,11 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using QuadGK
+
+julia> plot(x -> exp(-x), 0, log(2))
+
+julia> plot!(x -> 1/(2*log(2)))
+
+julia>

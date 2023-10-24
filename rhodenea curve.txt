@@ -1,0 +1,9 @@
+julia> a, k = 4, 5
+(4, 5)
+
+julia> r(theta) = a * sin(k * theta)
+r (generic function with 1 method)
+
+julia> plot_polar(0..pi, r)
+
+julia>

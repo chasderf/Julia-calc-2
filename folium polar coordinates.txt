@@ -1,0 +1,11 @@
+folium is a somewhat similar curve but it has this description
+
+r(theta) = -bcos(theta) + 4acos(theta)sin(2theta)
+
+julia> a, b = 4, 2
+(4, 2)
+
+julia> r(theta) = -b * cos(theta) + 4a * cos(theta) * sin(2theta)
+r (generic function with 1 method)
+
+julia> plot_polar(0..2pi, r)

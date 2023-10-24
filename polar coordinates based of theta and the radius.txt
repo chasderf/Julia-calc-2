@@ -1,0 +1,25 @@
+The description of the x-y plane via cartesian coordinates is not the only possible way, though one that is most familiar. Here we discuss a different means. Instead of talking about over and up from an origin, we focus on a direction and a distance from the origin (a vector if you will).
+
+The cartesian coordinates from the pair (4, theta), we havethese formulas from right triangle geometry:
+
+	x = r cos(theta), y = rsin(theta)
+
+
+
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using Roots
+
+julia> using QuadGK
+
+julia> x,y = -3, 4
+(-3, 4)
+julia> rad, theta = sqrt(x^2 + y^2), atan(y, x)
+(5.0, 2.214297435588181)
+
+julia> rad*cos(theta), rad*sin(theta)
+(-2.999999999999999, 4.000000000000001)

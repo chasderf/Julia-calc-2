@@ -1,0 +1,73 @@
+
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using QuadGK
+
+julia> @syms x
+(x,)
+julia> F = integrate(2 * PI * x^2 * sqrt(1 + (2x)^2), x)
+    ⎛       5                 3                                     ⎞
+    ⎜      x               3⋅x                x           asinh(2⋅x)⎟
+2⋅π⋅⎜───────────── + ─────────────── + ──────────────── - ──────────⎟
+    ⎜   __________        __________         __________       64    ⎟
+    ⎜  ╱    2            ╱    2
+╱    2                  ⎟
+    ⎝╲╱  4⋅x  + 1    8⋅╲╱  4⋅x  + 1    32⋅╲╱  4⋅x  + 1              ⎠
+
+julia> F(1) - F(0)
+    ⎛  asinh(2)   9⋅√5⎞
+2⋅π⋅⎜- ──────── + ────⎟
+    ⎝     64       32 ⎠
+
+julia> g(u) = 6 + 2sin(u)
+g (generic function with 1 method)
+
+julia> f(u) = 2cos(u)
+f (generic function with 1 method)
+
+julia> a, b = 0, 2pi
+(0, 6.283185307179586)
+
+julia> us = range(a, b, length=100)
+0.0:0.06346651825433926:6.283185307179586
+julia> plot(g.(us), f.(us), xlims=(-0.5, 9),aspect_ratio=:equal, legend=false)
+julia> plot!([0,0], [-3,3], color=:red, linewidth=5)
+julia> plot!([3,9], [0,0], color=:green, linewidth=5)
+
+#The xlims are adjusted to show the y axis, which is emphasized with a layered line. The line is drawn by specifying two points (x0,y0) and (x1, y1) in the form [x0, x1] and [y0, y1]
+
+julia> S(u,v) = [g(u)*cos(v), g(u)*sin(v), f(u)]
+S (generic function with 1 method)
+
+julia> us = range(a, b, length=100)
+0.0:0.06346651825433926:6.283185307179586
+
+julia> vs = range(0, 2pi, length=100)
+0.0:0.06346651825433926:6.283185307179586
+
+julia> ws = unzip(S.(us, vs'))
+
+julia> surface(ws..., zlims = (-6,6), legend=false)
+
+julia> plot!([0,0], [0,0], [-3,3], color=:red, linewidth=5)
+
+# The unzip is created by the CalculusWithJulia. This function rearranges data into a form consumable by the plotting methods like surface. In this case, the result of S.(us, vs') is a grid (matrix) of points, the result of unzip is three grids of values, one for the x values, one for the y values, and one for the z values. A manual adjustment to the zlims is used as aspect_ratio does not have an effect with the plotly() backend and errors on 3d graphics with pyplot()
+
+julia> S(u,v) = [g(u), f(u)*cos(v), f(u)*sin(v)]
+S (generic function with 1 method)
+
+julia> us = range(a, b, length=100)
+0.0:0.06346651825433926:6.283185307179586
+
+julia> vs = range(0, 2pi, length=100)
+0.0:0.06346651825433926:6.283185307179586
+
+julia> ws = unzip(S.(us, vs'))
+
+julia> surface(ws..., legend=false)
+
+julia> plot!([3,9], [0,0], [0,0], color=:green, linewidth=5)

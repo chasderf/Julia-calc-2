@@ -1,0 +1,34 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using QuadGK
+
+julia> @syms M
+(M,)
+
+julia> limit(sympy.Si(M), M => oo)
+π
+─
+2
+
+julia> f(x) = exp(-x^2/2)
+f (generic function with 1 method)
+
+julia> quadgk(f, -Inf, Inf)
+(2.506628274639168, 3.60843804865366e-8)
+
+julia> @syms x
+(x,)
+
+julia>  integrate(1/x, (x, 0, 1)), integrate(1/x, (x, -1, 1))
+(oo, nan)
+
+julia> f(x) = 1 / sqrt(abs(x))
+f (generic function with 1 method)
+
+julia> quadgk(f, -1, 0, 1)
+(3.999999962817228, 5.736423044966562e-8)
+

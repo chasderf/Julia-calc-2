@@ -1,0 +1,6 @@
+Better parameterization of limacon of pascal
+
+julia> r(theta) = sqrt(abs(cos(theta/8)))
+r (generic function with 1 method)
+
+julia> plot_polar(0..8pi, r)

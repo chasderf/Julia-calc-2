@@ -1,0 +1,143 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using Roots
+
+julia> using QuadGK
+
+julia> @syms x
+(x,)
+
+julia> integrate(sin(x),x)
+-cos(x)
+
+julia> integrate(sin(x), (x, 0, pi))
+2.00000000000000
+
+julia> integrate(acos(1-x), (x, 0, 2))
+π
+
+julia> @syms x::real n::real
+(x, n)
+
+julia> integrate(x^n, x)
+⎧ n + 1
+⎪x
+⎪──────  for n ≠ -1
+⎨n + 1
+⎪
+⎪log(x)  otherwise
+⎩
+
+julia> @syms u
+(u,)
+
+julia> integrate(abs(u),u)
+⌠
+⎮ │u│ du
+⌡
+
+julia> @syms u::real
+(u,)
+
+julia> integrate(abs(u),u)
+⎧  2
+⎪-u
+⎪────  for u ≤ 0
+⎪ 2
+⎨
+⎪  2
+⎪ u
+⎪ ──   otherwise
+⎩ 2
+
+julia> @syms x::real
+(x,)
+
+julia> integrate(x / sqrt(1-x^3), x)
+ 2         ┌─  ⎛1/2, 2/3 │  3  2⋅ⅈ⋅π⎞
+x ⋅Γ(2/3)⋅ ├─  ⎜         │ x ⋅ℯ     ⎟
+          2╵ 1 ⎝  5/3    │          ⎠
+─────────────────────────────────────
+               3⋅Γ(5/3)
+
+julia> F(x) = exp(-x^2) * quadgk(t -> exp(t^2), 0, x)[1]
+F (generic function with 1 method)
+
+julia> Fp(x) = -2x*F(x) + 1
+Fp (generic function with 1 method)
+
+julia> cps = find_zeros(Fp, -4, 4)
+2-element Vector{Float64}:
+ -0.9241388730045919
+  0.9241388730045919
+
+julia> Fpp(x) = -2F(x) + 4x^2*F(x) - 2x
+Fpp (generic function with 1 method)
+
+julia> Fpp.(cps)
+2-element Vector{Float64}:
+  1.0820884492703633
+ -1.0820884492703633
+
+julia> alpha, beta = 5,6
+(5, 6)
+
+julia> f(x) = x^(alpha-1)*(1-x)^(beta-1) * gamma(alpha + beta) / (gamma(alpha) * gamma(beta))
+f (generic function with 1 method)
+
+julia> q = 1/2
+0.5
+
+julia> h(x) = first(quadgk(f, 0, x)) - q
+h (generic function with 1 method)
+
+julia> hp(x) =  f(x)
+hp (generic function with 1 method)
+
+julia>
+
+julia> x0 = (alpha-1/3)/(alpha + beta - 2/3)
+0.45161290322580644
+
+julia> xstar = find_zero((h, hp), x0, Roots.Newton())1~
+ERROR: syntax: extra token "1" after end of expression
+Stacktrace:
+ [1] top-level scope
+   @ none:1
+
+julia> xstar = find_zero((h, hp), x0, Roots.Newton())
+0.4516941562236631
+
+julia> xstar, x0
+(0.4516941562236631, 0.45161290322580644)
+
+julia> function FnWrapper(f)
+           ctr = 0
+           function(x)
+               ctr += 1
+               f(x)
+           end
+       end
+FnWrapper (generic function with 1 method)
+
+julia> ff = FnWrapper(f)
+#5 (generic function with 1 method)
+
+julia> F(x) = first(quadgk(ff, 0, x))
+F (generic function with 1 method)
+
+julia> h(x) = F(x) - q
+h (generic function with 1 method)
+
+julia> hp(x) =  ff(x)
+hp (generic function with 1 method)
+
+julia> xstar = find_zero((h, hp), x0, Roots.Newton())
+0.4516941562236631
+
+julia> xstar, ff.ctr
+(0.4516941562236631, Core.Box(48))

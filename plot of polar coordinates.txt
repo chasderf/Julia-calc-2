@@ -1,0 +1,53 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using Roots
+
+julia> using QuadGK
+
+julia> x,y = -3, 4
+(-3, 4)
+julia> rad, theta = sqrt(x^2 + y^2), atan(y, x)
+(5.0, 2.214297435588181)
+
+julia> rad*cos(theta), rad*sin(theta)
+(-2.999999999999999, 4.000000000000001)
+julia> r(theta) = r0 * cos(theta-gamma) +   sqrt(R^2 - r0^2*sin(theta-gamma)^2)
+r (generic function with 1 method)
+
+julia> ts = range(0, 2pi, length = 100)
+0.0:0.06346651825433926:6.283185307179586
+julia> plot(ts, rs, proj =:polar, legend=false)
+
+julia> rs = r.(ts)
+100-element Vector{Float64}:
+ 1.4012585384440737
+ 1.4230359688712202
+ 1.4423419451179826
+ 1.4590381110407764
+ 1.473005297020508
+ 1.4841441834639875
+ 1.4923758189272642
+ 1.497642010109049
+ 1.4999055972408133
+ 1.4991506246951152
+ 1.4953824130042976
+ 1.4886275349273637
+ 1.4789336946868805
+ ⋮
+ 1.0537583056515107
+ 1.089389518444256
+ 1.1249329337352045
+ 1.1601471235418161
+ 1.1947868782977848
+ 1.2286066178115376
+ 1.2613636083270579
+ 1.2928209216717033
+ 1.3227500989427399
+ 1.3509335036579873
+ 1.3771663667841083
+ 1.4012585384440732
+julia> plot(ts, rs, proj=:polar, legend=false)

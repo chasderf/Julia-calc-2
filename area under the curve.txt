@@ -1,0 +1,227 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using QuadGK
+
+julia> using Roots
+
+julia> f(x) = 1 - abs(x)
+f (generic function with 1 method)
+
+julia> plot(f, -1, 1)
+
+julia> plot!(zero)
+
+julia> f(x) = 1
+f (generic function with 1 method)
+
+julia> plot(f, 0, 1)
+
+julia> plot!(zero)
+
+julia> f(x) = sqrt(1 - x^2)
+f (generic function with 1 method)
+
+julia> plot(f, -1, 1)
+
+julia> plot!(zero)
+
+julia> f(x) = x > 1 ? 2 - x : 1.0
+f (generic function with 1 method)
+
+julia> plot(f, 0, 2)
+
+julia> plot!(zero)
+
+julia> a, b = 0, 1
+(0, 1)
+
+julia> f(x) = x^2
+f (generic function with 1 method)
+
+julia> n = 5
+5
+
+julia> xs = a:(b-a)/n:b
+0.0:0.2:1.0
+
+julia> deltas = diff(xs)
+5-element Vector{Float64}:
+ 0.2
+ 0.2
+ 0.19999999999999996
+ 0.20000000000000007
+ 0.19999999999999996
+
+julia> cs = xs[1:end-1]
+0.0:0.2:0.8
+
+julia> sum(f(cs[i]) * deltas[i] for i in 1:length(deltas))
+0.24000000000000002
+
+julia> n = 50_000
+50000
+
+julia> xs = a:(b-a)/n:b
+0.0:2.0e-5:1.0
+
+julia> deltas = diff(xs)
+50000-element Vector{Float64}:
+ 2.0e-5
+ 2.0e-5
+ 1.9999999999999998e-5
+ 2.0000000000000005e-5
+ 1.9999999999999998e-5
+ 1.9999999999999998e-5
+ 1.9999999999999985e-5
+ 2.0000000000000025e-5
+ 1.9999999999999998e-5
+ 1.9999999999999998e-5
+ 1.9999999999999998e-5
+ 1.9999999999999998e-5
+ 1.999999999999997e-5
+ 1.9999999999999998e-5
+ 1.9999999999999998e-5
+ 2.0000000000000052e-5
+ 1.9999999999999998e-5
+ ⋮
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 1.999999999990898e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 1.999999999990898e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+ 1.999999999990898e-5
+ 2.0000000000020002e-5
+ 2.0000000000020002e-5
+
+julia> cs = xs[1:end-1]
+0.0:2.0e-5:0.99998
+
+julia> sum(f(cs[i]) * deltas[i] for i in 1:length(deltas))
+0.3333233333999998
+
+julia> riemann(f, a, b, n; method="right") = riemann(f, range(a,b,n+1); method=method)
+riemann (generic function with 1 method)
+
+julia> function riemann(f, xs; method="right")
+           Ms = (left = (f,a,b) -> f(a),
+                 right= (f,a,b) -> f(b),
+                 trapezoid = (f,a,b) -> (f(a) + f(b))/2,
+                 simpsons  = (f,a,b) -> (c = a/2 + b/2; (1/6) * (f(a) + 4*f(c) + f(b))),
+                 )
+           _riemann(Ms[Symbol(method)], f, xs)
+       end
+riemann (generic function with 2 methods)
+
+julia> function _riemann(M, f, xs)
+           xs′ = zip(xs[1:end-1], xs[2:end])
+           sum(M(f, a, b) * (b-a) for (a,b) ∈ xs′)
+       end
+_riemann (generic function with 1 method)
+
+julia> 𝒇(x) = exp(x)
+𝒇 (generic function with 1 method)
+
+julia> riemann(𝒇, 0, 5, 10)
+187.324835773627
+
+julia> riemann(𝒇, 0, 5, 50_000)
+147.42052988337647
+
+julia> 𝒉(x) = x > 0 ? x * log(x) : 0.0
+𝒉 (generic function with 1 method)
+
+julia> h(x) = x * log(x)
+h (generic function with 1 method)
+
+julia> riemann(h, 0, 2, 50_000, method="right")
+0.38632208884775826
+
+julia> xs = range(-1, 1, length=5)
+-1.0:0.5:1.0
+
+julia> deltas = diff(xs)
+4-element Vector{Float64}:
+ 0.5
+ 0.5
+ 0.5
+ 0.5
+
+julia> cs = [-3/4, -1/4, 1/4, 3/4]
+4-element Vector{Float64}:
+ -0.75
+ -0.25
+  0.25
+  0.75
+
+julia> j(x) = sqrt(1 - x^2)
+j (generic function with 1 method)
+
+julia> a = sum(j(c)*delta for (c,delta) in zip(cs, deltas))
+1.629683664318002
+
+julia> a, pi/2
+(1.629683664318002, 1.5707963267948966)
+
+julia> f(x) = x * log(x)
+f (generic function with 1 method)
+
+julia> quadgk(f, 0, 2)
+(0.38629436103070175, 4.856575112145755e-9)
+
+julia> f(x) = x^5 - x + 1
+f (generic function with 1 method)
+
+julia> quadgk(f, -2, 2)
+(3.9999999999999973, 1.3322676295501878e-15)
+
+julia> quadgk(sin, 0, pi)
+(2.0000000000000004, 1.7901236049056024e-12)
+
+julia> quadgk(x -> x^x, 0, 2)
+(2.8338767448900546, 1.948175154531384e-8)
+
+julia> quadgk(exp, 0, 5)
+(147.41315910257657, 2.6594506152832764e-8)
+
+julia> A, err = quadgk(cos, 0, pi/4)
+(0.7071067811865475, 0.0)
+
+julia> A
+0.7071067811865475
+
+julia> A = quadgk(tan, 0, pi/4)[1] # or first(quadgk(tan, 0, pi/4))
+0.3465735902799726
+
+julia> k(x) = exp(cos(x))
+k (generic function with 1 method)
+
+julia> A,err = quadgk(k, -pi, pi)
+(7.954926521012919, 3.9023298370466364e-8)
+
+julia> C = 1/A
+0.12570826359721896
+
+julia> k₁(x) = C * exp(cos(x))
+k₁ (generic function with 1 method)
+
+julia> K(x) = quadgk(k₁, -pi, x)[1]
+K (generic function with 1 method)
+
+julia> Z = ZeroProblem((x,p) -> K(x) - p, (-pi, pi))
+ZeroProblem{var"#23#24", Tuple{Float64, Irrational{:π}}}(var"#23#24"(), (-3.141592653589793, π))
+
+julia> solve.(Z, (1/4, 1/2, 3/4))
+(-0.8097673745015915, 0.0, 0.8097673745016285)
+
+julia>

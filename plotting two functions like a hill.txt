@@ -1,0 +1,19 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using Roots
+
+julia> using QuadGK
+
+julia> using SymPy
+
+julia> f(x) = 2 - x^2
+f (generic function with 1 method)
+
+julia> g(x) = 2x
+g (generic function with 1 method)
+
+julia> plot(f, -3,3)
+
+julia> plot!(g)

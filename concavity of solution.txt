@@ -1,0 +1,39 @@
+julia> n=5
+5
+
+julia> h = (2-1)/n
+0.2
+
+julia> xs = zeros(n+1)
+6-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> ys = zeros(n+1)
+6-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> xs[1] = x0
+1
+
+julia> ys[1] = y0
+1
+julia> for i in 1:n
+       xs[i + 1] = xs[i] + h
+       ys[i + 1] = ys[i] + h * F(ys[i], xs[i])
+       end
+
+julia> plot(exp(-1/2)*exp(x^2/2), x0, 2)
+
+julia> plot!(xs, ys)
+
+julia>

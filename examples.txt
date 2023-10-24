@@ -1,0 +1,130 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> f(x) = cos(x)^3 * sin(x)
+f (generic function with 1 method)
+
+julia> plot(f, 0, 1pi)
+
+julia> 1/2 * erf(1/sqrt(2))
+0.3413447460685429
+
+julia> @syms x::real t::real
+(x, t)
+julia> integrate(4x / sqrt(x^2 + 1), (x, 0, 2))
+-4 + 4⋅√5
+
+julia> f(x) = 1/(x*log(x))
+f (generic function with 1 method)
+julia> integrate(f(x), (x, sympy.E, sympy.E^2))
+log(2)
+
+julia> integate(1/(x*log(x)), x)
+ERROR: UndefVarError: `integate` not defined
+Stacktrace:
+ [1] top-level scope
+   @ REPL[11]:1
+
+julia> integrate(2/(x*log(x)), x)
+2⋅log(log(x))
+
+julia> integrate(1/(x*log(x)), x)
+log(log(x))
+julia> f(x) = (1 + log(x)) * sqrt(1 + (x*log(x))^2 )
+f (generic function with 1 method)
+
+julia> integrate(f(x), x)
+⌠
+⎮    ________________
+⎮   ╱  2    2
+⎮ ╲╱  x ⋅log (x) + 1 ⋅(log(x) + 1) dx
+⌡
+
+julia> u(x) = x * log(x)
+u (generic function with 1 method)
+
+julia> @syms w dw
+(w, dw)
+
+julia> ex = f(x)
+   ________________
+  ╱  2    2
+╲╱  x ⋅log (x) + 1 ⋅(log(x) + 1)
+julia> ex1 = ex(u(x) => w, diff(u(x), x) => dw)
+      ________
+     ╱  2
+dw⋅╲╱  w  + 1
+
+julia> ex2 = ex1(dw => 1)
+   ________
+  ╱  2
+╲╱  w  + 1
+
+julia> ex3 = integrate(ex2, w)
+     ________
+    ╱  2
+w⋅╲╱  w  + 1    asinh(w)
+───────────── + ────────
+      2            2
+
+julia> ex3(w => u(x))
+     ________________
+
+    ╱  2    2
+
+x⋅╲╱  x ⋅log (x) + 1 ⋅log(x)   asinh(x⋅log(x))
+──────────────────────────── + ───────────────
+             2                        2
+
+
+julia> integrate(1/(1+x^2), x)
+atan(x)
+
+julia> @syms a::real, b::real, x::real
+(a, b, x)
+
+julia> integrate(1 / (a^2 + (b*x)^2), x)
+    ⎛b⋅x⎞
+atan⎜───⎟
+    ⎝ a ⎠
+─────────
+   a⋅b
+
+julia> @syms a::real, b::real
+(a, b)
+julia> integrate(1 / sqrt(a^2 - b^2*x^2), x)
+⎧               ⎛│b│⋅│x│⎞
+
+⎪  ⅈ⋅x⋅│a│⋅acosh⎜───────⎟
+  2  2
+⎪               ⎝  │a│  ⎠     π⋅x⋅│a│        b ⋅x
+⎪- ────────────────────── + ───────────  for ───── > 1
+⎪        a⋅│b│⋅│x│          2⋅a⋅│b│⋅│x│         2
+⎪
+   a
+⎨
+
+⎪                   ⎛│b│⋅│x│⎞
+
+⎪         x⋅│a│⋅asin⎜───────⎟
+
+⎪                   ⎝  │a│  ⎠
+
+⎪         ───────────────────              otherwise
+⎪              a⋅│b│⋅│x│
+
+⎩
+
+julia> @syms a::positive, b::positive, x::real
+(a, b, x)
+julia> integrate(1 / sqrt(a^2*x^2 - b^2), x)
+   ⎛         ____________⎞
+   ⎜        ╱  2  2    2 ⎟
+log⎝a⋅x + ╲╱  a ⋅x  - b  ⎠
+──────────────────────────
+            a
+
+julia>

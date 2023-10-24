@@ -1,0 +1,6 @@
+Consider the cardioid described by r(theta) = 2(1 + cos(theta))
+
+julia> r(theta) = 2(1 + cos(theta))
+r (generic function with 1 method)
+
+julia> plot_polar(0..2pi, r)

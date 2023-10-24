@@ -1,0 +1,47 @@
+The Euler Method uses linearization. Each "step" is just an approximation of the function value y(xn + 1) with the value from the tangent line tangent to the point (xn, yn)
+
+
+
+
+
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using Roots
+
+julia> @syms x, y, u()
+(x, y, u)
+
+julia> D = Differential(x)
+Differential(x)
+
+julia> x0, y0 = 1, 1
+(1, 1)
+
+julia> F(y,x) = y*x
+F (generic function with 1 method)
+
+julia> dsolve(D(u)(x) - F(u(x), x))
+            2
+           x
+           ──
+           2
+u(x) = C₁⋅ℯ
+julia> out = dsolve(D(u)(x) - F(u(x),x), u(x), ics=Dict(u(x0) => y0))
+               2
+              x
+              ──
+        -1/2  2
+u(x) = ℯ    ⋅ℯ
+
+julia> p = plot(legend=false)
+
+julia> plot!(rhs(out), linewidth=5)
+
+julia> vectorfieldplot!((x,y) -> [1, F(x,y)], xlims=(0, 2.5), ylims=(0, 10))
+

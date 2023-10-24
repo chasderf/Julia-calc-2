@@ -1,0 +1,45 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using Roots
+
+julia> using QuadGK
+
+julia> using SymPy
+
+julia> @syms x::positive n::positive
+(x, n)
+julia> ex = integrate(x^n - x^(n+1), (x, 0, 1))
+    1       1
+- ───── + ─────
+  n + 2   n + 1
+
+julia> together(ex)
+       1
+───────────────
+(n + 1)⋅(n + 2)
+
+julia> p = plot(x, 0, 1, legend=false)
+
+julia> [plot!(p, x^n, 0, 1) for n in 2:20]
+19-element Vector{Plots.Plot{Plots.GRBackend}}:
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}
+ Plot{Plots.GRBackend() n=20}

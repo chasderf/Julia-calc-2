@@ -1,0 +1,20 @@
+julia> @syms g::positive l::positive theta()=>"θ"
+(g, l, θ)
+
+julia> eqnp = D2(theta)(x) + g/l*sin(theta(x))
+                2
+g⋅sin(θ(x))    d
+─────────── + ───(θ(x))
+     l          2
+              dx
+
+julia> eqnp1 = D2(u)(x) + g/l * u(x)
+           2
+g⋅u(x)    d
+────── + ───(u(x))
+  l        2
+         dx
+julia> dsolve(eqnp1, u(x), ics=Dict(u(0) => a, D(u)(0) => 0))
+            ⎛√g⋅x⎞
+u(x) = a⋅cos⎜────⎟
+            ⎝ √l ⎠

@@ -1,0 +1,75 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+julia> @syms x, u()
+(x, u)
+
+julia> @syms a::postive
+(a,)
+
+julia> D = Differential(x)
+Differential(x)
+
+julia> eqn = D(u)(x) ~ a * u(x) * (1 - u(x))
+d
+──(u(x)) = a⋅(1 - u(x))⋅u(x)
+dx
+
+julia> out = dsolve(eqn)
+            1
+u(x) = ────────────
+           -a⋅x
+       C₁⋅ℯ     + 1
+
+julia> limit(rhs(out), x => 00), limit(rhs(out), x => -00)
+(1/(C1 + 1), 1/(C1 + 1))
+
+julia> diff(rhs(out), x)
+         -a⋅x
+   C₁⋅a⋅ℯ
+───────────────
+              2
+⎛    -a⋅x    ⎞
+⎝C₁⋅ℯ     + 1⎠
+
+julia> eq = rhs(out)
+     1
+────────────
+    -a⋅x
+C₁⋅ℯ     + 1
+
+julia> C1 = first(setdiff(free_symbols(eq), (x, a)))
+C₁
+
+julia> c1 = solve(eq(x => 9) - 1//2, C1)
+1-element Vector{Sym}:
+ exp(9*a)
+
+julia> eq(C1 => c1[1])
+      1
+──────────────
+ 9⋅a  -a⋅x
+ℯ   ⋅ℯ     + 1
+
+julia> c1 = solve(eq(x => 0) - 1//2, C1)
+1-element Vector{Sym}:
+ 1
+
+julia> eq(C1 => c1[1])
+    1
+─────────
+     -a⋅x
+1 + ℯ
+
+julia> x0, y0 = 0, Sym(1//2)
+(0, 1/2)
+
+julia> dsolve(eqn, u(x), ics=Dict(u(x0) => y0))
+           1
+u(x) = ─────────
+            -a⋅x
+       1 + ℯ
+
+julia>

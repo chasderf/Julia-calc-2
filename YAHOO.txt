@@ -1,0 +1,345 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using QuadGK
+
+julia> using Roots
+
+julia> @syms x
+(x,)
+
+julia> F = integrate(sqrt(1 + (2x)^2), x)
+     __________
+    ╱    2
+x⋅╲╱  4⋅x  + 1    asinh(2⋅x)
+─────────────── + ──────────
+       2              4
+
+julia> F(1) - F(0)
+asinh(2)   √5
+──────── + ──
+   4       2
+
+julia> f(x) = x^2
+f (generic function with 1 method)
+
+julia> plot(f, 0, 1)
+julia> ex = integrate(sqrt(1 + (1/x)^2), (x, 1/sympy.E, sympy.E))
+                                   -2                                       2
+       1              ⎛ -1⎞       ℯ
+      1                        ℯ
+- ──────────── - asinh⎝ℯ  ⎠ - ──────────── + ─────────── + asinh(ℯ) + ────────
+     _________                   _________      ________                 _____
+    ╱  -2                       ╱  -2          ╱      2                 ╱
+  ╲╱  ℯ   + 1                 ╲╱  ℯ   + 1    ╲╱  1 + ℯ                ╲╱  1 +
+
+
+
+───
+___
+ 2
+ℯ
+
+julia> N(ex)
+3.1961985135995072
+
+julia> chain(x; a=2) = a * cosh(x/a)
+chain (generic function with 1 method)
+
+julia> plot(chain, -1, 1)
+julia> quadgk(x -> sqrt(1 + chain'(x)^2), -1, 1) [1]ERROR: syntax: space before "[" not allowed in "quadgk(x -> begin
+    # REPL[15], line 1
+    sqrt((1 + (chain'(x) ^ 2)))
+end, -1, 1) [" at REPL[15]:1
+Stacktrace:
+ [1] top-level scope
+   @ none:1
+
+julia> quadgk(x -> sqrt(1 + chain'(x)^2), -1, 1)
+(2.0843812219749895, 0.0)
+
+julia> cat(x; a=1, b=0) = a*cosh(x/a) - b
+cat (generic function with 1 method)
+julia> find_zero(x -> cat(78/2, a=a, b=118 + a), 10)ERROR: UndefVarError: `a` not defined
+Stacktrace:
+  [1] (::var"#7#8")(x::Float64)
+    @ Main .\REPL[18]:1
+  [2] (::Roots.Callable_Function{Val{1}, Val{false}, var"#7#8", Nothing})(x::Float64)
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\functions.jl:29
+  [3] init_state(M::Secant, F::Roots.Callable_Function{Val{1}, Val{false}, var"#7#8", Nothing}, x::Int64)
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\DerivativeFree\derivative_free.jl:6
+  [4] init(𝑭𝑿::ZeroProblem{var"#7#8", Int64}, M::Secant, N::AlefeldPotraShi, p′::Nothing; p::Nothing, verbose::Bool, tracks::Roots.NullTracks, kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\hybrid.jl:16
+  [5] init (repeats 2 times)
+    @ C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\hybrid.jl:5 [inlined]
+  [6] #init#89
+    @ C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\DerivativeFree\order0.jl:37 [inlined]
+  [7] init
+    @ C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\DerivativeFree\order0.jl:27 [inlined]
+  [8] solve(𝑭𝑿::ZeroProblem{var"#7#8", Int64}, M::Order0, p::Nothing; verbose::Bool, kwargs::Base.Pairs{Symbol, Roots.NullTracks, Tuple{Symbol}, NamedTuple{(:tracks,), Tuple{Roots.NullTracks}}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:491
+  [9] find_zero(f::Function, x0::Int64, M::Order0, p′::Nothing; p::Nothing, verbose::Bool, tracks::Roots.NullTracks, kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:220
+ [10] find_zero (repeats 2 times)
+    @ C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:210 [inlined]
+ [11] #find_zero#40
+    @ C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:243 [inlined]
+ [12] find_zero(f::Function, x0::Int64)
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:243
+ [13] top-level scope
+    @ REPL[18]:1
+
+julia> cat(x; a=1, b=0) = a*cosh(x/a)
+cat (generic function with 1 method)
+julia> find_zero(a -> cat(78/2, a=a, b=118 + a), 10)0.0
+
+julia> a = 13
+13
+
+julia> b = 118 + a
+131
+
+julia> f(x) = cat(x; a=13, b=118+13)
+f (generic function with 1 method)
+
+julia> quadgk(x -> sqrt(1 + f'(x)^2), -78/2, 78/2)
+(260.4647481126575, 4.562116941997374e-7)
+
+julia> a = 1298/2;
+
+julia> b = -147
+-147
+
+julia> f(x) = (-b/a^2)*(x^2 - a^2);
+julia> val, _ = quadgk(x -> sqrt(1 + f'(x)^2), -a, a)
+(1341.1191077638794, 1.6609874364803545e-8)
+
+julia> val
+1341.1191077638794
+
+julia> a = 1
+1
+
+julia> g(t) = a*(3cos(t) - cos(3t))
+g (generic function with 1 method)
+
+julia> f(t) = a*(3sin(t) - sin(3t))
+f (generic function with 1 method)
+julia> quadgk(t -> sqrt(g'(t)^2 +  f'(t)^2), 0, 2pi)[1]
+23.999999999999993
+
+julia> a, b = 1, 2
+(1, 2)
+julia> s(u) = quadgk(t -> sqrt(a^2 * sin(t)^2 + b^2 * cos(t)^2), 0, u) [1]
+ERROR: syntax: space before "[" not allowed in "quadgk(t -> begin
+    # REPL[36], line 1
+    sqrt((((a ^ 2) * (sin(t) ^ 2)) + ((b ^ 2) * (cos(t) ^ 2))))
+end, 0, u) [" at REPL[36]:1
+Stacktrace:
+ [1] top-level scope
+   @ none:1
+
+julia> s(u) = quadgk(t -> sqrt(a^2 * sin(t)^2 + b^2 * cos(t)^2), 0, u)
+s (generic function with 1 method)
+
+julia> plot(s, 0, 2pi)
+ERROR: MethodError: no method matching Float64(::Tuple{Float64, Float64})
+
+Closest candidates are:
+  (::Type{T})(::AbstractChar) where T<:Union{AbstractChar, Number}
+   @ Base char.jl:50
+  (::Type{T})(::Base.TwicePrecision) where T<:Number   @ Base twiceprecision.jl:266
+  (::Type{T})(::Complex) where T<:Real
+   @ Base complex.jl:44
+  ...
+
+Stacktrace:
+  [1] (::RecipesPipeline.var"#1#2"{Symbol})(x::Tuple{Float64, Float64})
+    @ RecipesPipeline C:\Users\Charlie\.julia\packages\RecipesPipeline\BGM3l\src\utils.jl:197
+  [2] call_composed
+    @ .\operators.jl:1034 [inlined]
+  [3] (::ComposedFunction{ComposedFunction{RecipesPipeline.var"#1#2"{Symbol}, typeof(s)}, RecipesPipeline.var"#3#4"{Symbol}})(x::Float64; kw::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Base .\operators.jl:1031
+  [4] (::ComposedFunction{ComposedFunction{RecipesPipeline.var"#1#2"{Symbol}, typeof(s)}, RecipesPipeline.var"#3#4"{Symbol}})(x::Float64)
+    @ Base .\operators.jl:1031
+  [5] (::PlotUtils.var"#21#23"{ComposedFunction{ComposedFunction{RecipesPipeline.var"#1#2"{Symbol}, typeof(s)}, RecipesPipeline.var"#3#4"{Symbol}}})(x::Float64)
+    @ PlotUtils C:\Users\Charlie\.julia\packages\PlotUtils\mHQ0Q\src\adapted_grid.jl:49
+  [6] _broadcast_getindex_evalf
+    @ .\broadcast.jl:683 [inlined]
+  [7] _broadcast_getindex
+    @ .\broadcast.jl:656 [inlined]
+  [8] getindex
+    @ .\broadcast.jl:610 [inlined]
+  [9] macro expansion
+    @ .\broadcast.jl:974 [inlined]
+ [10] macro expansion
+    @ .\simdloop.jl:77 [inlined]
+ [11] copyto!
+    @ .\broadcast.jl:973 [inlined]
+ [12] copyto!
+    @ .\broadcast.jl:926 [inlined]
+ [13] copy
+    @ .\broadcast.jl:898 [inlined]
+ [14] materialize(bc::Base.Broadcast.Broadcasted{Base.Broadcast.DefaultArrayStyle{1}, Nothing, PlotUtils.var"#21#23"{ComposedFunction{ComposedFunction{RecipesPipeline.var"#1#2"{Symbol}, typeof(s)}, RecipesPipeline.var"#3#4"{Symbol}}}, Tuple{Vector{Float64}}})
+    @ Base.Broadcast .\broadcast.jl:873
+ [15] adapted_grid(f::Any, minmax::Tuple{Float64, Float64}; max_recursions::Int64, max_curvature::Float64, n_points::Int64)
+    @ PlotUtils C:\Users\Charlie\.julia\packages\PlotUtils\mHQ0Q\src\adapted_grid.jl:60
+ [16] adapted_grid(f::Any, minmax::Tuple{Float64, Float64})
+    @ PlotUtils C:\Users\Charlie\.julia\packages\PlotUtils\mHQ0Q\src\adapted_grid.jl:14
+ [17] _scaled_adapted_grid(f::Function, xscale::Symbol, yscale::Symbol, xmin::Int64, xmax::Float64)
+    @ RecipesPipeline C:\Users\Charlie\.julia\packages\RecipesPipeline\BGM3l\src\user_recipe.jl:322
+ [18] macro expansion
+    @ C:\Users\Charlie\.julia\packages\RecipesPipeline\BGM3l\src\user_recipe.jl:265 [inlined]
+ [19] apply_recipe(plotattributes::AbstractDict{Symbol, Any}, f::Function, xmin::Number, xmax::Number)
+    @ RecipesPipeline C:\Users\Charlie\.julia\packages\RecipesBase\BRe07\src\RecipesBase.jl:300
+ [20] _process_userrecipes!(plt::Any, plotattributes::Any, args::Any)
+    @ RecipesPipeline C:\Users\Charlie\.julia\packages\RecipesPipeline\BGM3l\src\user_recipe.jl:38
+ [21] recipe_pipeline!(plt::Any, plotattributes::Any, args::Any)
+    @ RecipesPipeline C:\Users\Charlie\.julia\packages\RecipesPipeline\BGM3l\src\RecipesPipeline.jl:72
+ [22] _plot!(plt::Plots.Plot, plotattributes::Any, args::Any)
+    @ Plots C:\Users\Charlie\.julia\packages\Plots\sxUvK\src\plot.jl:223
+ [23] plot(::Any, ::Vararg{Any}; kw::Base.Pairs{Symbol, V, Tuple{Vararg{Symbol, N}}, NamedTuple{names, T}} where {V, N, names, T<:Tuple{Vararg{Any, N}}})
+    @ Plots C:\Users\Charlie\.julia\packages\Plots\sxUvK\src\plot.jl:102
+ [24] plot(::Any, ::Any, ::Any, ::Vararg{Any})
+    @ Plots C:\Users\Charlie\.julia\packages\Plots\sxUvK\src\plot.jl:93
+ [25] top-level scope
+    @ REPL[38]:1
+julia> sinv(u) = find_zero(x -> s(x) - u, (0, s(2pi)))
+sinv (generic function with 1 method)
+
+julia> g(t) = a * cos(t)
+g (generic function with 1 method)
+
+julia> f(t) = b * sin(t)
+julia> plot(t -> g(s(t)), t -> f(s(t)), 0, sinv(2*pi))
+ERROR: MethodError: no method matching isless(::Tuple{Float64, Float64}, ::Int64)
+
+Closest candidates are:
+  isless(::Union{StatsBase.PValue, StatsBase.TestStat}, ::Real)
+   @ StatsBase C:\Users\Charlie\.julia\packages\StatsBase\WLz8A\src\statmodels.jl:90
+  isless(::AbstractGray, ::Real)
+   @ ColorTypes C:\Users\Charlie\.julia\packages\ColorTypes\1dGw6\src\operations.jl:38
+  isless(::AbstractFloat, ::Real)
+   @ Base operators.jl:179
+  ...
+
+Stacktrace:
+  [1] min(x::Int64, y::Tuple{Float64, Float64})
+    @ Base .\operators.jl:481
+  [2] _extrema_rf
+    @ .\reduce.jl:860 [inlined]
+  [3] BottomRF
+    @ .\reduce.jl:81 [inlined]
+  [4] MappingRF
+    @ .\reduce.jl:95 [inlined]
+  [5] afoldl(::Base.MappingRF{Base.ExtremaMap{typeof(identity)}, Base.BottomRF{typeof(Base._extrema_rf)}}, ::Base._InitialValue, ::Int64, ::Tuple{Float64, Float64})
+    @ Base .\operators.jl:536
+  [6] _foldl_impl(op::Base.MappingRF{Base.ExtremaMap{typeof(identity)}, Base.BottomRF{typeof(Base._extrema_rf)}}, init::Base._InitialValue, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\tuple.jl:329
+  [7] foldl_impl(op::Base.MappingRF{Base.ExtremaMap{typeof(identity)}, Base.BottomRF{typeof(Base._extrema_rf)}}, nt::Base._InitialValue, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:48
+  [8] mapfoldl_impl(f::Base.ExtremaMap{typeof(identity)}, op::typeof(Base._extrema_rf), nt::Base._InitialValue, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:44
+  [9] mapfoldl(f::Function, op::Function, itr::Tuple{Int64, Tuple{Float64, Float64}}; init::Base._InitialValue)
+    @ Base .\reduce.jl:170
+ [10] mapfoldl
+    @ .\reduce.jl:170 [inlined]
+ [11] #mapreduce#292
+    @ .\reduce.jl:302 [inlined]
+ [12] mapreduce
+    @ .\reduce.jl:302 [inlined]
+ [13] extrema(f::Function, itr::Tuple{Int64, Tuple{Float64, Float64}}; kw::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Base .\reduce.jl:850
+ [14] extrema(f::Function, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:850
+ [15] extrema(itr::Tuple{Int64, Tuple{Float64, Float64}}; kw::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Base .\reduce.jl:820
+ [16] extrema(itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:820
+ [17] _extrema(x::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\utils.jl:37
+ [18] find_zero_default_method(x0::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:239
+ [19] find_zero(f::Function, x0::Tuple{Int64, Tuple{Float64, Float64}}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:243
+ [20] find_zero(f::Function, x0::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:243
+ [21] sinv(u::Float64)
+    @ Main .\REPL[39]:1
+ [22] top-level scope
+    @ REPL[42]:1
+
+julia> plot(t -> g(s(t)), t -> f(s(t)), 0, sinv(2*pi))
+ERROR: MethodError: no method matching isless(::Tuple{Float64, Float64}, ::Int64)
+
+Closest candidates are:
+  isless(::Union{StatsBase.PValue, StatsBase.TestStat}, ::Real)
+   @ StatsBase C:\Users\Charlie\.julia\packages\StatsBase\WLz8A\src\statmodels.jl:90
+  isless(::AbstractGray, ::Real)
+   @ ColorTypes C:\Users\Charlie\.julia\packages\ColorTypes\1dGw6\src\operations.jl:38
+  isless(::AbstractFloat, ::Real)
+   @ Base operators.jl:179
+  ...
+
+Stacktrace:
+  [1] min(x::Int64, y::Tuple{Float64, Float64})
+    @ Base .\operators.jl:481
+  [2] _extrema_rf
+    @ .\reduce.jl:860 [inlined]
+  [3] BottomRF
+    @ .\reduce.jl:81 [inlined]
+  [4] MappingRF
+    @ .\reduce.jl:95 [inlined]
+  [5] afoldl(::Base.MappingRF{Base.ExtremaMap{typeof(identity)}, Base.BottomRF{typeof(Base._extrema_rf)}}, ::Base._InitialValue, ::Int64, ::Tuple{Float64, Float64})
+    @ Base .\operators.jl:536
+  [6] _foldl_impl(op::Base.MappingRF{Base.ExtremaMap{typeof(identity)}, Base.BottomRF{typeof(Base._extrema_rf)}}, init::Base._InitialValue, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\tuple.jl:329
+  [7] foldl_impl(op::Base.MappingRF{Base.ExtremaMap{typeof(identity)}, Base.BottomRF{typeof(Base._extrema_rf)}}, nt::Base._InitialValue, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:48
+  [8] mapfoldl_impl(f::Base.ExtremaMap{typeof(identity)}, op::typeof(Base._extrema_rf), nt::Base._InitialValue, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:44
+  [9] mapfoldl(f::Function, op::Function, itr::Tuple{Int64, Tuple{Float64, Float64}}; init::Base._InitialValue)
+    @ Base .\reduce.jl:170
+ [10] mapfoldl
+    @ .\reduce.jl:170 [inlined]
+ [11] #mapreduce#292
+    @ .\reduce.jl:302 [inlined]
+ [12] mapreduce
+    @ .\reduce.jl:302 [inlined]
+ [13] extrema(f::Function, itr::Tuple{Int64, Tuple{Float64, Float64}}; kw::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Base .\reduce.jl:850
+ [14] extrema(f::Function, itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:850
+ [15] extrema(itr::Tuple{Int64, Tuple{Float64, Float64}}; kw::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Base .\reduce.jl:820
+ [16] extrema(itr::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Base .\reduce.jl:820
+ [17] _extrema(x::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\utils.jl:37
+ [18] find_zero_default_method(x0::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:239
+ [19] find_zero(f::Function, x0::Tuple{Int64, Tuple{Float64, Float64}}; kwargs::Base.Pairs{Symbol, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:243
+ [20] find_zero(f::Function, x0::Tuple{Int64, Tuple{Float64, Float64}})
+    @ Roots C:\Users\Charlie\.julia\packages\Roots\Nt9wP\src\find_zero.jl:243
+ [21] sinv(u::Float64)
+    @ Main .\REPL[39]:1
+ [22] top-level scope
+    @ REPL[42]:1
+julia> @syms ge::positive, k::positive, v0::positive, θ::positive, x::positive
+(ge, k, v0, θ, x)
+julia> ex = (ge/(k*v0*cos(θ)) + tan(θ))*x + ge/k^2 * log(1 - k/(v0*cos(θ)) * x)
+      ⎛     k⋅x       ⎞
+ge⋅log⎜- ───────── + 1⎟
+      ⎝  v₀⋅cos(θ)    ⎠     ⎛     ge             ⎞
+─────────────────────── + x⋅⎜─────────── + tan(θ)⎟
+            2               ⎝k⋅v₀⋅cos(θ)         ⎠
+           k
+
+julia> diff(ex, x, x), diff(ex, x, x, x,)
+(-ge/(v0^2*(k*x/(v0*cos(θ)) - 1)^2*cos(θ)^2), 2*ge*k/(v0^3*(k*x/(v0*cos(θ)) - 1)^3*cos(θ)^3))
+
+julia>

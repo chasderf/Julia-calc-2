@@ -1,0 +1,23 @@
+julia> @syms k::positive m::positive
+(k, m)
+
+julia> D2 = D ∘ D
+Differential(x) ∘ Differential(x)
+
+julia> eqnh = D2(u)(x) ~ -(k/m)*u(x)
+  2
+ d          -k⋅u(x)
+───(u(x)) = ────────
+  2            m
+dx
+
+julia> dsolve(eqnh)
+             ⎛√k⋅x⎞         ⎛√k⋅x⎞
+u(x) = C₁⋅sin⎜────⎟ + C₂⋅cos⎜────⎟
+             ⎝ √m ⎠         ⎝ √m ⎠
+
+julia> dsolve(eqnh, u(x), ics = Dict(u(0) => -a, D(u)(0) =>  0))
+             ⎛√k⋅x⎞
+u(x) = -a⋅cos⎜────⎟
+             ⎝ √m ⎠
+

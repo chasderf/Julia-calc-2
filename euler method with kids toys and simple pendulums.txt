@@ -1,0 +1,287 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using Roots
+
+julia> @syms x, y, u()
+(x, y, u)
+
+julia> D = Differential(x)
+Differential(x)
+
+julia> x0, y0 = 1, 1
+(1, 1)
+
+julia> F(y,x) = y*x
+F (generic function with 1 method)
+
+julia> dsolve(D(u)(x) - F(u(x), x))
+            2
+           x
+           ──
+           2
+u(x) = C₁⋅ℯ
+
+julia> dsolve(D(u)(x) - F(u(x),x), u(x), ics=Dict(u(x0) => y0))
+               2
+              x
+              ──
+        -1/2  2
+u(x) = ℯ    ⋅ℯ
+
+julia> p = plot(legend=false)
+
+julia> plot!(rhs(out), linewidth=5)
+ERROR: UndefVarError: `out` not defined
+Stacktrace:
+ [1] top-level scope
+   @ REPL[12]:1
+
+julia> out = dsolve(D(u)(x) - F(u(x),x), u(x), ics=Dict(u(x0) => y0))
+               2
+              x
+              ──
+        -1/2  2
+u(x) = ℯ    ⋅ℯ
+
+julia> p = plot(legend=false)
+
+julia> plot!(rhs(out), linewidth=5)
+
+julia>  vectorfieldplot!((x,y) -> [1, F(x,y)], xlims=(0, 2.5), ylims=(0, 10)julia> plot!(rhs(out), linewidth=5)
+
+julia> n=5
+5
+
+julia> h = (2-1)/n
+0.2
+
+julia> xs = zeros(n+1)
+6-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> ys = zeros(n+1)
+6-element Vector{Float64}:
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> xs[1] = x0
+1
+
+julia> ys[1] = y0
+1
+
+julia> for i in 1:n
+       xs[i + 1] = xs[i] + h
+       ys[i + 1] = ys[i] + h * F(ys[i], xs[i]
+       end
+ERROR: syntax: missing comma or ) in argument list
+Stacktrace:
+ [1] top-level scope
+   @ none:1
+
+julia> for i in 1:n
+              xs[i + 1] = xs[i] + h
+              ys[i + 1] = ys[i] + h * F(ys[i], xs[i])
+              end
+
+julia> plot(exp(-1/2)*exp(x^2/2), x0, 2)
+
+julia> plot!(xs, ys)
+
+
+
+julia> function linterp(xs, ys)
+       function(x)
+               ((x < xs[1]) || (x > xs[end])) && return NaN
+               for i in 1:(length(xs) - 1)
+                   if xs[i] <= x < xs[i+1]
+                       l = (x-xs[i]) / (xs[i+1] - xs[i])
+                       return (1-l) * ys[i] + l * ys[i+1]
+                   end
+               end
+               ys[end]
+           end
+       end
+linterp (generic function with 1 method)
+
+julia> function euler(F, x0, xn, y0, n)
+         h = (xn - x0)/n
+         xs = zeros(n+1)
+         ys = zeros(n+1)
+         xs[1] = x0
+         ys[1] = y0
+         for i in 1:n
+           xs[i + 1] = xs[i] + h
+           ys[i + 1] = ys[i] + h * F(ys[i], xs[i])
+         end
+         xs[end] = xn
+         linterp(xs, ys)
+       end
+euler (generic function with 1 method)
+
+julia> u12 = euler(F, 1, 2, 1, 50)
+#5 (generic function with 1 method)
+
+julia> u12 = euler(F, 1, 2, 1, 50)
+#5 (generic function with 1 method)
+
+julia> plot!(u12, x0, 2)
+
+julia> plot!(u12, x0, 2)
+
+julia> F(y,x) = x + y
+F (generic function with 1 method)
+
+julia> x0, xn, y0 = 0, 2, 1
+(0, 2, 1)
+
+julia> f = euler(F, x0, xn, y0, 25)
+#5 (generic function with 1 method)
+
+julia> f(xn)
+10.696950392438632
+
+julia> 𝒐ut = dsolve(D(u)(x) - F(u(x),x), u(x), ics = Dict(u(x0) => y0))
+               x
+u(x) = -x + 2⋅ℯ  - 1
+
+julia> plot(rhs(𝒐ut), x0, xn)
+
+julia> plot(rhs(𝒐ut), x0, xn)
+
+julia> plot!(f, x0, xn)
+
+
+julia> F(y,x) = sin(x*y)
+F (generic function with 1 method)
+
+julia> eqn = D(u)(x) - F(u(x), x)
+               d
+-sin(x⋅u(x)) + ──(u(x))
+               dx
+
+julia> out = dsolve(eqn, hint="1st_power_series")
+                2       4 ⎛      2⎞
+            C₁⋅x    C₁⋅x ⋅⎝3 - C₁ ⎠    ⎛ 6⎞
+u(x) = C₁ + ───── + ─────────────── + O⎝x ⎠
+              2            24
+
+julia> out1 = dsolve(eqn, u(x), ics=Dict(u(0) => 1), hint="1st_power_series")
+            2    4
+           x    x     ⎛ 6⎞
+u(x) = 1 + ── + ── + O⎝x ⎠
+           2    12
+
+julia> x0, xn, y0 = 0, 2, 1
+(0, 2, 1)
+
+julia> plot(legend=false)
+
+julia> vectorfieldplot!((x,y) -> [1, F(y,x)], xlims=(x0, xn), ylims=(0,5))
+
+julia> plot!(rhs(out1).removeO(),  linewidth=5)
+
+julia> u = euler(F, x0, xn, y0, 10)
+#5 (generic function with 1 method)
+
+julia> plot!(u, linewidth=5)
+EXAMPLE
+The Brachistochrone problem was posed by Johann Bernoulli in 1696. It asked for the curve between two points for which an object will fall faster along that curve than any other. For an example, a bead sliding on a wire will take a certain amount of time to get from point A to point B, the time depending on the shape of the wire. Which shape will take the least amount of time?
+
+
+As early as 1638, Galileo showed that an object falling along AC and then CB will fall faster than one traveling along AB, where C is on the arc of a circle. From the History of Math Archive.
+
+julia> function back_euler(F, x0, xn, y0, n)
+           h = (xn - x0)/n
+           xs = zeros(n+1)
+           ys = zeros(n+1)
+           xs[1] = x0
+           ys[1] = y0
+           for i in 1:n
+               xs[i + 1] = xs[i] + h
+               ## solve y[i+1] = y[i] + h * F(y[i+1], x[i+1])
+               ys[i + 1] = find_zero(y -> ys[i] + h * F(y, xs[i + 1]) - y, ys[i]+h)
+           end
+         linterp(xs, ys)
+       end
+back_euler (generic function with 1 method)
+
+julia> F(y, x; C=1) = sqrt(C/y - 1)
+F (generic function with 1 method)
+
+julia> x0, xn, y0 = 0, 1.2, 0
+(0, 1.2, 0)
+
+julia> cyc = back_euler(F, x0, xn, y0, 50)
+#5 (generic function with 1 method)
+
+julia> plot(x -> 1 - cyc(x), x0, xn)
+
+
+julia> F(y,x) = -5y
+F (generic function with 1 method)
+
+julia> x0, xn, y0 = 0, 2, 1
+(0, 2, 1)
+
+julia> u = euler(F, x0, xn, y0, 4)
+#5 (generic function with 1 method)
+
+julia> vectorfieldplot((x,y) -> [1, F(y,x)], xlims=(0, 2), ylims=(-5, 5))
+
+julia> vectorfieldplot((x,y) -> [1, F(y,x)], xlims=(0, 2), ylims=(-5, 5))
+
+julia> plot!(u, 0, 2, linewidth=5)
+
+julia> u₁ = euler(F, x0, xn, y0, 50)
+#5 (generic function with 1 method)
+
+julia> plot(x -> y0 * exp(-5x), 0, 2)
+
+julia> plot!(u₁, 0, 2)
+
+The differential equation describing the simple pendulum is 
+		\theta '' (t) = -g/l sin(\theta(t))
+
+julia> function euler2(x0, xn, y0, yp0, n; g=9.8, l = 5)
+         xs, us, vs = zeros(n+1), zeros(n+1), zeros(n+1)
+         xs[1], us[1], vs[1] = x0, y0, yp0
+         h = (xn - x0)/n
+         for i = 1:n
+           xs[i+1] = xs[i] + h
+           us[i+1] = us[i] + h * vs[i]
+           vs[i+1] = vs[i] + h * (-g / l) * sin(us[i])
+         end
+         linterp(xs, us)
+       end
+euler2 (generic function with 1 method)
+
+julia> l, g = 5, 9.8
+(5, 9.8)
+
+julia> T = 2pi * sqrt(l/g)
+4.487989505128276
+
+julia> x0, xn, y0, yp0 = 0, 4T, pi/4, 0
+(0, 17.951958020513104, 0.7853981633974483, 0)
+
+julia> plot(euler2(x0, xn, y0, yp0, 20), 0, 4T)
+
+julia> plot(euler2(x0, xn, y0, yp0, 360), 0, 4T)
+
+julia> plot!(x -> pi/4*cos(sqrt(g/l)*x), 0, 4T)

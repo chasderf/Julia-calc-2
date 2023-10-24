@@ -1,0 +1,62 @@
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> @syms x
+(x,)
+
+julia> integrate(x^10 * exp(x), x)
+⎛ 10       9       8        7         6          5           4           3
+⎝x   - 10⋅x  + 90⋅x  - 720⋅x  + 5040⋅x  - 30240⋅x  + 151200⋅x  - 604800⋅x  + 1
+
+        2                      ⎞  x
+814400⋅x  - 3628800⋅x + 3628800⎠⋅ℯ
+
+julia> integrate(cos(x)^10, x)
+                 9                  7                   5                   3
+63⋅x   sin(x)⋅cos (x)   9⋅sin(x)⋅cos (x)   21⋅sin(x)⋅cos (x)   21⋅sin(x)⋅cos (
+──── + ────────────── + ──────────────── + ───────────────── + ───────────────
+256          10                80
+      160                 128
+
+
+x)   63⋅sin(x)⋅cos(x)
+── + ────────────────
+           256
+julia> integrate
+julia> integrate(cos(x)^10, x)
+                 9                  7                   5                   3
+63⋅x   sin(x)⋅cos (x)   9⋅sin(x)⋅cos (x)   21⋅sin(x)⋅cos (x)   21⋅sin(x)⋅cos (
+──── + ────────────── + ──────────────── + ───────────────── + ───────────────
+256          10                80
+      160                 128
+
+
+x)   63⋅sin(x)⋅cos(x)
+── + ────────────────
+           256
+
+julia> @syms r t
+(r, t)
+
+julia> x = r * cos(t)
+r⋅cos(t)
+
+julia> y = r * sin(t)
+r⋅sin(t)
+julia> -integrate(y * diff(x, t), (t, 0, 2PI))
+   2
+π⋅r
+
+julia> @syms t
+(t,)
+
+julia> x = t - sin(t)
+t - sin(t)
+
+julia> y = 1 - cos(t)
+1 - cos(t)
+julia> integrate(y * diff(x, t), (t, 0, 2PI))
+3⋅π    

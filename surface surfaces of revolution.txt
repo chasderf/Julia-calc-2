@@ -1,0 +1,31 @@
+Let the graph of f(x) = x^2 from x = 0 to x = 1 to be rotated around the x axis. What is the resulting surface area generated?
+
+SA = integral of a to b within [(2pi)(f(x)){sqrt{(1+f'(x)^2} dx } = integal of 0 to 1 within { 2 pi x^2 sqrt(1+(2x)^2 } dx
+
+We need to let SymPy do this computation since the integral is a trig substitution
+
+julia> using CalculusWithJulia
+
+julia> using Plots
+
+julia> using SymPy
+
+julia> using QuadGK
+
+julia> @syms x
+(x,)
+julia> F = integrate(2 * PI * x^2 * sqrt(1 + (2x)^2), x)
+    ⎛       5                 3                                     ⎞
+    ⎜      x               3⋅x                x           asinh(2⋅x)⎟
+2⋅π⋅⎜───────────── + ─────────────── + ──────────────── - ──────────⎟
+    ⎜   __________        __________         __________       64    ⎟
+    ⎜  ╱    2            ╱    2
+╱    2                  ⎟
+    ⎝╲╱  4⋅x  + 1    8⋅╲╱  4⋅x  + 1    32⋅╲╱  4⋅x  + 1              ⎠
+
+julia> F(1) - F(0)
+    ⎛  asinh(2)   9⋅√5⎞
+2⋅π⋅⎜- ──────── + ────⎟
+    ⎝     64       32 ⎠
+
+julia>
